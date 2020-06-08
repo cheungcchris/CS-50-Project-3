@@ -1,0 +1,20 @@
+{% extends "orders/layout.html" %}
+
+{% block heading %}
+
+<div>Register</div>
+{% endblock %}
+
+{% block body %}
+<form action="{% url 'register' %}" method="post">
+    {% csrf_token %}
+    <div><input name="username" type="text" placeholder="Username" autocomplete="off" required></div>
+    <div><input name="password" type="password" placeholder="Password" autocomplete="off" required></div>
+    <div><input name="firstname" type="text" placeholder="First Name" autocomplete="off" required></div>
+    <div><input name="lastname" type="text" placeholder="Last Name" autocomplete="off" required></div>
+    <div><input name="email" type="text" placeholder="Email Address" autocomplete="off" required></div>
+    <div><input type="submit" value="Register"></div>
+</form>
+
+
+{% endblock %}

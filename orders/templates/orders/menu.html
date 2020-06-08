@@ -1,0 +1,208 @@
+{% extends "orders/layout.html" %}
+
+{% block heading %}
+    {%load static %}
+    <div>Menu</div>
+    <h3 style="text-align: center;">Order today and get a coupon on your next purchase!</h3>
+    <hr>
+    <script type="text/javascript" src = "{% static 'orders/menu.js' %}"></script>
+    
+    <style type="text/css">
+        .form-popup {
+            display: none;
+            padding: 10px;
+            position: fixed;
+            top: 15%;
+            left: 30%;
+            border: 3px solid;
+
+        }
+        .col{
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+        #pizza, #sub, #pasta, #salad, #dinnerplatter{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .pizzatype, .resub, .repasta, .resalad, .redp {
+            margin-left: 30px;
+            margin-bottom: 10px;
+       }
+
+        .repizza, .reresub, .reredp{
+            margin-left: 60px;
+            margin-bottom: 10px;
+        }
+        .rerepizza{
+            margin-left: 90px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col border" >
+            <form action="{% url 'index' %}">
+                <button>Return to User Page</button>
+            </form>
+            <hr>
+            <!-- Pizza -->
+            <div><button id="pizza">Pizza</button></div>
+            <div id="pizzadiv" hidden="True">  
+            {%for k in ptypes%}
+                <div><button id="{{k}}" class="pizzatype" value="{{k}}">{{k}} </button></div>
+                    {%for i in pizza%}
+                        {%if i.ptype == k%}
+                            {%if i.size == "Small"%}
+                                <div>
+                                    <button id="{{i.name}}" title="{{i.ptype}}"class="repizza {{i.ptype}}" value="{{i.name}}" hidden="True">
+                                        {{i.name}} Pizza
+                                    </button>
+                                </div>
+                            {%endif%}
+                            <div>
+                                <button value="{{i.id}}" name="{{i.size}} {{i.ptype}} {{i.name}}" title="{{i.name}}" class="rerepizza {{i.ptype}}"  hidden="True">
+                                    {{i.size}} -- ${{i.price}}
+                                </button>
+                                
+                            </div>
+                        {%endif%}
+                    {%endfor%}
+            {%endfor%}
+            </div>
+            <!-- Pizza Topping Form -->
+
+            <div class="form-popup" id="myForm">
+                <form action="{% url 'addtocartpizza' %}" method="post" class="form-container">
+                    {% csrf_token %}
+                    <div style="text-align: center; text-decoration: underline"  >Select Toppings(<span id="toppingsremaining"></span>/<span id=totaltoppings></span>)</div>
+                    <div>
+                        <span id="pizzainfo"></span>
+                    </div>
+                    {%for j in pizzatopping%}
+                        <div>
+                            <input type="checkbox" value="{{j.name}}" name="pizzatopping" class="ptopping" >
+                            <small> {{j.name}}</small> 
+                        </div>
+                        {%endfor%}
+                    <div><button type="submit" name="addtocartpizza" style="float: left" class="btn" id="submitpizza">Order</button>
+                    <button type="button" style="float: right;" class="btn cancel" id="closebtn">Close</button></div>
+                </form>
+            </div>
+
+
+
+
+            <!-- Sub -->
+            <div><button id="sub">Sub</button></div>
+            <div id="subdiv" hidden="True">
+            {%for i in sub%}
+                {%if i.size == "Small"%}
+                    <div><button id="{{i.name}}" class="resub" value="{{i.name}}">{{i.name}} Sub</button></div>
+                {%endif%}
+                <form action="{% url 'addtocartsub' %}" method="post">
+                    {% csrf_token %}
+                    <div>
+                        <button value="{{i.id}}" name="addtocartsub" title="{{i.name}}" class="reresub" hidden="True">
+                            {{i.size}} --${{i.price}}
+                        </button>
+                        {%for j in subtopping%}
+                            {%if j.name == "Cheese" or i.name == "Steak + Cheese"%}
+                            <input type="checkbox" title="{{i.name}}" style="margin:0px"class="reresub" name="subtopping" value="{{j.name}}" hidden="True">
+                            <small class="reresub" style="margin:0px"title="{{i.name}}" hidden="True"> 
+                                {{j.name}} ({{j.price}}c)
+                                </small> 
+                            {%endif%}
+                        {%endfor%}
+                    </div>
+                </form>
+                
+            {%endfor%}            
+            </div>
+            <!-- Pasta -->
+            <div><button id="pasta">Pasta</button></div>
+            <div id="pastadiv" hidden="True">
+            {%for i in pasta%}
+                <div>
+                <form action="{% url 'addtocart' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="addtocart" value="{{i.id}}" class="repasta"> {{i.name}} --${{i.price}}</button>
+                </form>
+                </div>
+            {%endfor%}
+            </div>            
+            
+            <!-- Salad -->
+            <div><button id="salad" >Salad</button></div>
+            <div id="saladdiv" hidden="True">
+            {%for i in salad%}
+                <div>
+                <form action="{% url 'addtocart' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="addtocart" value="{{i.id}}" class="resalad">{{i.name}} --${{i.price}}</button>
+                </form>
+                </div>
+            {%endfor%}            
+            </div>
+            <!-- Dinner Platter -->
+            <div><button id="dinnerplatter" >Dinner Platter</button></div>
+            <div id="dinnerplatterdiv" hidden="True">
+            {%for i in dinnerplatter%}
+                {%if i.size == "Small"%}
+                    <div><button id="{{i.name}}" class="redp" value="{{i.name}}">{{i.name}} </button></div>
+                {%endif%}
+                <form action="{% url 'addtocart' %}" method="post">
+                    {% csrf_token %}
+                    <div>
+                        <button value="{{i.id}}" name="addtocart" title="{{i.name}}" class="reredp" hidden="True">{{i.size}} --${{i.price}}</button>
+                    </div>
+                </form>
+                
+            {%endfor%}            
+            </div>
+        </div>
+        <div class="col border" >
+            
+            <div>
+                <h4>
+                    <form action="{% url 'placeorder' %}" method="post">
+                        {% csrf_token %}
+                        {{user.username}}'s Cart -- $<span id="subtotal"></span>(<span id="numitems"></span> items)
+                        <button name="placeorder">Place Order</button>
+                    </form>
+                </h4>
+
+            </div>
+            <div id="coupontext">
+                <span style="background-color: yellow">
+                    <span id="remaining"></span>
+                    <span id="percentoff" hidden="True">
+                        <span id="coupon">{{coupon}}</span>
+                        % Off
+                    </span>
+                    <span id="couponstatus"></span>
+                </span>
+            </div>
+            <button id="cartvis" style="margin-bottom: 10px">Hide Cart</button>
+            <div id="shoppingcart">
+                {%for i in cart%}
+                    <form action="{% url 'removefromcart' %}" method="post">
+                        {% csrf_token %}
+                        <div class="cartitem" value="{{i.id}}" title="{{i.price}}">
+                            <button value={{i.id}} name="removefromcart">x</button>
+                            {{i}}
+                        </div>
+                    </form>
+                    
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+{% endblock %}

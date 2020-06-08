@@ -1,0 +1,26 @@
+{% extends "orders/layout.html" %}
+
+{% block heading %}
+   
+{% if message %}
+    <div>
+        {{ message }}
+    </div>
+{% endif %}
+<div>Login</div>
+{% endblock %}
+
+{% block body %}
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <div><input name="username" type="text" placeholder="Username" autocomplete="off" required></div>
+    <div><input name="password" type="password" placeholder="Password" autocomplete="off" required></div>
+    <div><input type="submit" value="Login"></div>
+</form>
+
+<form action="{% url 'signup' %}">
+    <div><input type="submit" value="Register"></div>
+</form>
+
+
+{% endblock %}

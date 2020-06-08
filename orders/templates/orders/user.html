@@ -1,0 +1,24 @@
+{% extends "orders/layout.html" %}
+{% block heading %}
+    <h1>
+    	Hello {{user.username}}
+    	{% if message %}
+        	{{ message }}
+		{% endif %}
+	</h1>
+    <h3>
+        {%if coupon > 0%}
+            Coupon: Save {{coupon}}% on next order of $50 or more!
+
+        {%endif%}
+    </h3>
+{% endblock %}
+{% block body %}
+    <form action="{% url 'menu' %}">
+        <button>Menu</button>
+    </form>
+    <form action="{% url 'logout' %}">
+        <button>Logout</button>
+    </form>
+
+{% endblock %}
